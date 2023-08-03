@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import Quiz from "./pages/Quiz";
 import Error from "./pages/404.jsx";
 import Result from "./pages/Result";
+import CreateQuiz from "./pages/CreateQuiz";
 
 function App() {
   const mode = useSelector((state) => state.mode.value);
@@ -26,8 +27,9 @@ function App() {
             <Route index element={<Home />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/result" element={<Result />} />
-            <Route path="*" element={<Error />} />
+            <Route path="/createquiz" element={<CreateQuiz />} />
           </Route>
+          <Route path="*" element={<Error />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

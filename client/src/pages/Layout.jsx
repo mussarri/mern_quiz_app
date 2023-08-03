@@ -14,6 +14,7 @@ function Layout() {
           margin: "40px auto",
           width: "100%",
           height: "100%",
+          overflow: "scroll"
         }}
       >
         <Outlet />

@@ -9,37 +9,28 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import { next, prev, endQuiz } from "../redux/questionsSlice";
-import { useDispatch, useSelector } from "react-redux";
+
 import { useNavigate } from "react-router-dom";
+import Timer from "../components/Timer";
+import Stepperr from "../components/Stepper";
+import { useGetAllQuizQuery } from "../redux/api";
 
 function Quiz() {
   const theme = useTheme();
-  const dispatch = useDispatch();
+  const [trace, setTrace] = useState(0);
+  const [answer, setAnswer] = useState([]);
   const navigate = useNavigate();
-  const [answer, setAnswer] = useState();
-  const trace = useSelector((state) => state.questions.trace);
-  const question = useSelector((state) => state.questions.getQuestion(trace));
-  const questionLength = useSelector((state) => state.questions.length());
 
-  console.log(questionLength);
+  const { data } = useGetAllQuizQuery();
+  const questions = data?.allQuiz[0].questions;
+  const question = questions && questions[trace];
 
   const handleNext = () => {
-    if (!answer) {
-      alert("Alert");
-      return false;
-    }
-    if (trace < questionLength - 1) {
-      setAnswer("");
-      dispatch(next(answer));
-    } else {
-      dispatch(endQuiz());
-      navigate("/result");
-    }
+    if (trace < questions?.length - 1) setTrace((prev) => prev + 1);
+    else navigate("/result");
   };
-
   const handlePrev = () => {
-    dispatch(prev());
+    if (trace > 0) setTrace((prev) => prev - 1);
   };
 
   return (
@@ -55,7 +46,7 @@ function Quiz() {
         <>
           <Box p={5} borderRight="1px dotted grey">
             <Typography mt={5} fontSize={20}>
-              {trace + ". " + question.text}
+              {trace + 1 + ". " + question.desc}
             </Typography>
             <Typography mt={4} fontSize={18} fontWeight="bold">
               Which answer is correct ?
@@ -72,7 +63,7 @@ function Quiz() {
                   <FormControlLabel
                     key={i}
                     value={item}
-                    control={<Radio checked={item === answer} />}
+                    control={<Radio />}
                     label={item}
                     style={{ marginTop: 20 }}
                   />
@@ -83,26 +74,42 @@ function Quiz() {
         </>
       )}
 
-      <Button
-        variant="contained"
-        color="primary"
-        size="large"
-        style={{ position: "absolute", right: 50, bottom: 50 }}
-        type="primary"
-        onClick={handleNext}
+      <Timer time={50} />
+
+      <Box
+        position="absolute"
+        bottom={0}
+        width="100%"
+        gridColumn="2 span"
+        display="flex"
+        justifyContent="space-between"
+        px={3}
+        alignItems="center"
+        height={100}
+        sx={{ background: theme.palette.background.paper }}
       >
-        Next Question
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        size="large"
-        style={{ position: "absolute", left: 50, bottom: 50 }}
-        type="primary"
-        onClick={handlePrev}
-      >
-        PREV Question
-      </Button>
+        <Button
+          onClick={handlePrev}
+          variant="contained"
+          color="primary"
+          size="large"
+          type="primary"
+        >
+          Prev
+        </Button>
+        <Box flex={1}>
+          <Stepperr count={questions?.length} />
+        </Box>
+        <Button
+          onClick={handleNext}
+          variant="contained"
+          color="primary"
+          size="large"
+          type="primary"
+        >
+          Next
+        </Button>
+      </Box>
     </Box>
   );
 }

@@ -2,17 +2,13 @@ import {
   Box,
   Button,
   FormControl,
-  FormControlLabel,
-  FormLabel,
   Input,
   InputLabel,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import img from "../components/choose.png";
 import { useTheme } from "@emotion/react";
 import SendIcon from "@mui/icons-material/Send";
@@ -21,6 +17,18 @@ import { useNavigate } from "react-router-dom";
 function Home() {
   const theme = useTheme();
   const navigate = useNavigate();
+  const [username, setUsername] = useState();
+  const [category, setCategory] = useState();
+
+
+  const handleStart = () => {
+    if (!username || !category) {
+      alert("please fill the form");
+      return false;
+    }
+   
+    navigate("/quiz");
+  };
   return (
     <Box
       display="grid"
@@ -42,10 +50,14 @@ function Home() {
         <Typography p={2} variant="h1">
           Welcome to our quiz app !
         </Typography>
-        <Box display="flex" justifyContent="space-between" mt={1} pr={5}>
+        <Box display="flex" justifyContent="space-between" mt={3} pr={5}>
           <Box flex={2}>
             <Typography>Username</Typography>
-            <Input mb={3} fullWidth />
+            <Input
+              mb={3}
+              fullWidth
+              onChange={(e) => setUsername(e.target.value)}
+            />
 
             <FormControl fullWidth sx={{ marginTop: 3 }}>
               <InputLabel id="demo-simple-select-label">Category</InputLabel>
@@ -53,33 +65,61 @@ function Home() {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label="Category"
+                onChange={(e) => setCategory(e.target.value)}
               >
-                <MenuItem value="science">Science</MenuItem>
-                <MenuItem value="spor">Spor</MenuItem>
-                <MenuItem value="movies">Movies</MenuItem>
+                <MenuItem selected={category === "sicence"} value="science">
+                  Science
+                </MenuItem>
+                <MenuItem selected={category === "spor"} value="spor">
+                  Spor
+                </MenuItem>
+                <MenuItem selected={category === "movies"} value="movies">
+                  Movies
+                </MenuItem>
               </Select>
             </FormControl>
 
-            <FormControl sx={{ marginTop: 3 }}>
+            {/* <FormControl sx={{ marginTop: 3 }}>
               <FormLabel id="demo-radio-buttons-group-label">Time</FormLabel>
               <RadioGroup
                 p
                 aria-labelledby="demo-radio-buttons-group-label"
                 defaultValue="female"
                 name="radio-buttons-group"
+                onChange={(e) => setTime(e.target.value)}
                 sx={{ display: "flex", flexDirection: "row" }}
               >
-                <FormControlLabel value="10m" control={<Radio />} label="10m" />
-                <FormControlLabel value="20m" control={<Radio />} label="20m" />
-                <FormControlLabel value="30m" control={<Radio />} label="30m" />
-                <FormControlLabel value="1h" control={<Radio />} label="1h" />
+                <FormControlLabel
+                  selected={time === 10}
+                  value={10}
+                  control={<Radio />}
+                  label="10m"
+                />
+                <FormControlLabel
+                  selected={time === 20}
+                  value={20}
+                  control={<Radio />}
+                  label="20m"
+                />
+                <FormControlLabel
+                  selected={time === 30}
+                  value={30}
+                  control={<Radio />}
+                  label="30m"
+                />
+                <FormControlLabel
+                  selected={time === 60}
+                  value={60}
+                  control={<Radio />}
+                  label="1h"
+                />
               </RadioGroup>
-            </FormControl>
+            </FormControl> */}
           </Box>
           <Box flex={1} position="relative" px={2}>
             <Button
               endIcon={<SendIcon />}
-              onClick={() => navigate("/quiz")}
+              onClick={handleStart}
               style={{
                 borderRadius: 100,
                 background: theme.palette.primary.main,
