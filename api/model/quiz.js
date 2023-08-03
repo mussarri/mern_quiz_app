@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const questionSchema = new mongoose.Schema({
-  desc: { type: String, unique: true },
+  desc: { type: String },
   main: { type: String, required: true },
   options: [String],
   true: { type: Number, required: true },

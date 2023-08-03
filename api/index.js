@@ -7,6 +7,7 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import "dotenv/config";
 import quizRouter from "./route/quiz.js";
+import authRouter from "./route/auth.js"
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -43,6 +44,7 @@ app.use(cookieParser());
 app.use("/upload", express.static(__dirname + "/upload"));
 
 app.use("/quiz", quizRouter);
+app.use("/auth", authRouter);
 
 app.listen(4000, () => {
   console.log(`app listening on port ${4000}`);

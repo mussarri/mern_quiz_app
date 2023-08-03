@@ -18,7 +18,8 @@ import { useGetAllQuizQuery } from "../redux/api";
 function Quiz() {
   const theme = useTheme();
   const [trace, setTrace] = useState(0);
-  const [answer, setAnswer] = useState([]);
+  const [answer, setAnswer] = useState("");
+  const [answers, setAnswers] = useState([]);
   const navigate = useNavigate();
 
   const { data } = useGetAllQuizQuery();
@@ -26,8 +27,10 @@ function Quiz() {
   const question = questions && questions[trace];
 
   const handleNext = () => {
-    if (trace < questions?.length - 1) setTrace((prev) => prev + 1);
-    else navigate("/result");
+    if (trace < questions?.length - 1) {
+      setAnswer("")
+      setTrace((prev) => prev + 1);
+    } else navigate("/result");
   };
   const handlePrev = () => {
     if (trace > 0) setTrace((prev) => prev - 1);
@@ -57,6 +60,7 @@ function Quiz() {
               <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
                 name="radio-buttons-group"
+                value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
               >
                 {question.options.map((item, i) => (
@@ -98,7 +102,7 @@ function Quiz() {
           Prev
         </Button>
         <Box flex={1}>
-          <Stepperr count={questions?.length} />
+          <Stepperr count={questions?.length} active={trace} />
         </Box>
         <Button
           onClick={handleNext}

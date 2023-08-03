@@ -10,17 +10,31 @@ import Container from "@mui/material/Container";
 import QuizIcon from "@mui/icons-material/Quiz";
 import { useTheme } from "@emotion/react";
 import { DarkModeOutlined } from "@mui/icons-material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setMode } from "../redux/modeSlice";
 import { Link } from "react-router-dom";
-import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
-import { deepOrange } from "@mui/material/colors";
+import { Avatar, Button, Menu, MenuItem, Tooltip } from "@mui/material";
+import { instance } from "../pages/Layout";
+import { setUser } from "../redux/userSlice";
 
 function Navbar() {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
+  console.log(user);
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleLogout = async () => {
+    console.log("click");
+    instance
+      .get("/auth/logout")
+      .then((res) => {
+        console.log(res);
+        dispatch(setUser({}));
+      })
+      .catch((err) => console.log(err));
+  };
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -69,46 +83,53 @@ function Navbar() {
             >
               <DarkModeOutlined />
             </IconButton>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar
-                  alt="Remy Sharp"
-                  src=""
-                  sx={{ background: theme.palette.primary.main }}
-                />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {["Create Quiz", "Logout"].map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Link
-                    to={setting
-                      .split(" ")
-                      .filter((i) => i !== " ")
-                      .join("")
-                      .toLocaleLowerCase()}
-                    textAlign="center"
-                  >
-                    {setting}
-                  </Link>
-                </MenuItem>
-              ))}
-            </Menu>
+            {user.username ? (
+              <>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar
+                      alt="Remy Sharp"
+                      src=""
+                      sx={{ background: theme.palette.primary.main }}
+                    />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: "45px" }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {user.role === "admin" && (
+                    <MenuItem>
+                      <Link to={"/createquiz"} textAlign="center">
+                        Create Quiz
+                      </Link>
+                    </MenuItem>
+                  )}
+                  <MenuItem onClick={() => handleLogout()}>
+                    <Link textAlign="center">Logout</Link>
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <>
+                <Link style={{ marginRight: 10 }} to={"/login"}>
+                  Login
+                </Link>
+                <Link to={"/register"}>Register</Link>
+              </>
+            )}
           </Box>
         </Toolbar>
       </Container>

@@ -15,7 +15,8 @@ export const quizApi = createApi({
         headers: {
           "Content-type": "application/json; charset=UTF-8",
         },
-        validateStatus: (response, result) => response.status === 200 && !result.isError
+        validateStatus: (response, result) =>
+          response.status === 200 && !result.isError,
       }),
     }),
   }),

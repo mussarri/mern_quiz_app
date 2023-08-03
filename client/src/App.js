@@ -11,6 +11,8 @@ import Quiz from "./pages/Quiz";
 import Error from "./pages/404.jsx";
 import Result from "./pages/Result";
 import CreateQuiz from "./pages/CreateQuiz";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 
 function App() {
   const mode = useSelector((state) => state.mode.value);
@@ -28,6 +30,8 @@ function App() {
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/result" element={<Result />} />
             <Route path="/createquiz" element={<CreateQuiz />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Route>
           <Route path="*" element={<Error />} />
         </Routes>

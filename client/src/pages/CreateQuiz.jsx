@@ -1,5 +1,6 @@
 import { useTheme } from "@emotion/react";
 import {
+  Alert,
   Box,
   Button,
   FormControl,
@@ -12,12 +13,13 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import { useCreateQueryMutation } from "../redux/api";
+import { instance } from "./Layout";
 
 function CreateQuiz() {
   const theme = useTheme();
   const [post, setPost] = useState(false);
 
+  const [errors, setErrors] = useState();
   const [name, setName] = useState();
   const [category, setCategory] = useState();
   const [questions, setQuestions] = useState([]);
@@ -30,8 +32,6 @@ function CreateQuiz() {
     "Option 3",
     "Option 4",
   ]);
-  const [createPost, { data, isLoading, isError, error }] =
-    useCreateQueryMutation();
 
   const handleRemove = (i) => {
     setQuestions((prev) => [...prev.filter((item, index) => index !== i)]);
@@ -45,7 +45,7 @@ function CreateQuiz() {
   };
 
   const handleClick = () => {
-    if (!desc || !main || !options) {
+    if (!main || !options) {
       alert("Please fill the question form");
       setPost(false);
       return false;
@@ -55,6 +55,7 @@ function CreateQuiz() {
       desc,
       main,
       options,
+      true: 1,
     };
     setQuestions((prev) => [...prev, question]);
     setQuestionDesc("");
@@ -68,34 +69,63 @@ function CreateQuiz() {
     //   return false;
     // }
     //add database
-    const postedQuestions = [...questions, { desc, main, options }];
+    if (post) return false;
+    let postedQuestions = errors
+      ? [...questions]
+      : [...questions, { desc, main, options, true: 1 }];
     setPost(true);
     handleClick();
-    createPost({
-      name,
-      category,
-      questions: postedQuestions,
-    });
+
+    instance
+      .post("/quiz", {
+        questions: postedQuestions,
+        name,
+        category,
+      })
+      .then((res) => {
+        console.log(res);
+        alert(`Quiz saved succesfully`);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+        if (err.response.data.message.message) {
+          setErrors(err.response.data.message.message);
+        }
+        if (err.response.data.message?.code === 11000) {
+          setErrors("Duplicated error, please use different quiz name.");
+        }
+      });
+    setPost(false);
   };
-  console.log(data);
+
   return (
     <Box>
-      <Box display="flex" gap={2}>
+      {errors && (
+        <Alert
+          variant="outlined"
+          severity="error"
+          sx={{ marginBottom: 2, width: "100%" }}
+        >
+          {errors}
+        </Alert>
+      )}
+      <Box display="flex" gap={3}>
         <Box>
-          <Typography>Quiz Name</Typography>
-          <Input
-            disabled={post}
+          <TextField
+            placeholder="Quiz Name *"
+            size="small"
+            // disabled={post}
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </Box>
 
-        <FormControl size="small" sx={{ marginTop: 3, width: 200 }}>
+        <FormControl size="small" sx={{ width: 200 }}>
           <InputLabel id="demo-simple-select-label">Category</InputLabel>
           <Select
             required
-            disabled={post}
+            // disabled={post}
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             label="Category"
@@ -113,8 +143,7 @@ function CreateQuiz() {
           </Select>
         </FormControl>
         <Box>
-          <Typography>Image</Typography>
-          <Input disabled={post} type="file" />
+          <Input placeholder="image" disabled={post} type="file" />
         </Box>
       </Box>
       {questions.length > 0
@@ -131,10 +160,13 @@ function CreateQuiz() {
             />
           ))
         : ""}
-      {post || (
+      {post ? (
+        ""
+      ) : errors ? (
+        ""
+      ) : (
         <Question
           index={questions.length}
-          setQuestions={setQuestions}
           questionDesc={desc}
           setQuestionDesc={setQuestionDesc}
           handleChange={handleChange}
@@ -205,12 +237,14 @@ function Question({
         <Typography fontWeight={"bolder"}>{index + 1})</Typography>
         <Box flex={1} marginTop={1} display="flex" gap={2}>
           <TextareaAutosize
+            placeholder="Question description (optional)"
             style={{ ...textareaSyle, flex: 2 }}
             value={item?.desc || questionDesc}
             disabled={disable}
             onChange={isQuestion || ((e) => setQuestionDesc(e.target.value))}
           />
           <TextareaAutosize
+            placeholder="Question main text"
             style={{ ...textareaSyle, flex: 1 }}
             value={item?.main || questionMain}
             disabled={disable}
