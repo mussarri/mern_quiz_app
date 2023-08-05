@@ -10,6 +10,7 @@ const questionSchema = new mongoose.Schema({
 const quizSchema = new mongoose.Schema(
   {
     name: { type: String, unique: true, required: true },
+    image: { type: String},
     userId: { type: mongoose.Types.ObjectId, ref: "User" },
     category: { type: String, required: true },
     time: Number,

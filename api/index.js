@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import "dotenv/config";
 import quizRouter from "./route/quiz.js";
 import authRouter from "./route/auth.js"
+import fs from 'node:fs'
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -16,7 +17,9 @@ const __dirname = dirname(__filename);
 // image upload
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./upload/");
+    fs.mkdir('./uploads/',(err)=>{
+      cb(null, './uploads/');
+   });
   },
   filename: (req, file, cb) => {
     cb(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
@@ -41,7 +44,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-app.use("/upload", express.static(__dirname + "/upload"));
+app.use("/uploads", express.static(__dirname + "/uploads"));
+app.use("/quiz", express.static(__dirname + "/uploads"));
 
 app.use("/quiz", quizRouter);
 app.use("/auth", authRouter);

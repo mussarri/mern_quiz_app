@@ -22,7 +22,7 @@ function Layout() {
           dispatch(
             setUser({
               username: res.data.decoded.username,
-              role: res.data.decoded.username || "user",
+              role: res.data.decoded.role || "user",
             })
           );
         })

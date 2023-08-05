@@ -18,12 +18,14 @@ import { instance } from "./Layout";
 function CreateQuiz() {
   const theme = useTheme();
   const [post, setPost] = useState(false);
-
   const [errors, setErrors] = useState();
+
   const [name, setName] = useState();
+  const [image, setImage] = useState();
   const [category, setCategory] = useState();
   const [questions, setQuestions] = useState([]);
 
+  const [correct, setCorrect] = useState(0);
   const [desc, setQuestionDesc] = useState("");
   const [main, setQuestionMain] = useState("");
   const [options, setCurrentOptions] = useState([
@@ -55,9 +57,10 @@ function CreateQuiz() {
       desc,
       main,
       options,
-      true: 1,
+      true: correct,
     };
     setQuestions((prev) => [...prev, question]);
+    setCorrect(0);
     setQuestionDesc("");
     setQuestionMain("");
     setCurrentOptions(["Option 1", "Option 2", "Option 3", "Option 4"]);
@@ -72,16 +75,19 @@ function CreateQuiz() {
     if (post) return false;
     let postedQuestions = errors
       ? [...questions]
-      : [...questions, { desc, main, options, true: 1 }];
+      : [...questions, { desc, main, options, true: correct }];
+    const data = JSON.stringify({ questions: postedQuestions });
     setPost(true);
     handleClick();
 
+    const formData = new FormData();
+    formData.set("image", image);
+    formData.set("name", name);
+    formData.set("category", category);
+    formData.set("questions", data);
+
     instance
-      .post("/quiz", {
-        questions: postedQuestions,
-        name,
-        category,
-      })
+      .post("/quiz", formData)
       .then((res) => {
         console.log(res);
         alert(`Quiz saved succesfully`);
@@ -95,7 +101,6 @@ function CreateQuiz() {
           setErrors("Duplicated error, please use different quiz name.");
         }
       });
-    setPost(false);
   };
 
   return (
@@ -143,7 +148,12 @@ function CreateQuiz() {
           </Select>
         </FormControl>
         <Box>
-          <Input placeholder="image" disabled={post} type="file" />
+          <Input
+            placeholder="image"
+            disabled={post}
+            type="file"
+            onChange={(e) => setImage(e.target.files[0])}
+          />
         </Box>
       </Box>
       {questions.length > 0
@@ -174,9 +184,12 @@ function CreateQuiz() {
           questionMain={main}
           setQuestionMain={setQuestionMain}
           theme={theme}
+          setCorrect={setCorrect}
+          correct={correct}
         />
       )}
       <Button
+        disabled={questions.length < 3}
         onClick={handlePost}
         sx={{ float: "right", marginTop: 3 }}
         variant="secondary"
@@ -208,6 +221,8 @@ function Question({
   index,
   handleRemove,
   post,
+  setCorrect,
+  correct,
 }) {
   const textareaSyle = {
     width: "100%",
@@ -253,9 +268,9 @@ function Question({
         </Box>
 
         <Box flex={1} mt={2} display="flex" gap={1} flexWrap="wrap">
-          {item
-            ? item.options.map((option, i) => (
-                <>
+          <>
+            {item
+              ? item.options.map((option, i) => (
                   <TextField
                     id="outlined-basic"
                     value={option}
@@ -264,10 +279,8 @@ function Question({
                     size="small"
                     disabled={disable}
                   />
-                </>
-              ))
-            : currentOptions.map((option, i) => (
-                <>
+                ))
+              : currentOptions.map((option, i) => (
                   <TextField
                     id="outlined-basic"
                     value={option}
@@ -276,8 +289,19 @@ function Question({
                     size="small"
                     disabled={disable}
                   />
-                </>
-              ))}
+                ))}
+          </>
+        </Box>
+        <Box display="flex" alignItems="flex-end" gap={2}>
+          <InputLabel>Correct Answer Index:</InputLabel>
+          <Input
+            disabled={post}
+            sx={{ mt: 2, width: 50 }}
+            size="small"
+            placeholder="Correct Answer Index"
+            value={correct}
+            onChange={(e) => setCorrect(e.target.value)}
+          />
         </Box>
       </Box>
     </>

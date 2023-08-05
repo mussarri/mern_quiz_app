@@ -21,7 +21,7 @@ function Navbar() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
-  console.log(user);
+  
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 

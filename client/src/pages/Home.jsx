@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   FormControl,
-  Input,
   InputLabel,
   MenuItem,
   Select,
@@ -23,12 +22,7 @@ function Home() {
   const user = useSelector((state) => state.user.user);
 
   const handleStart = () => {
-    if (!category) {
-      alert("please fill the form");
-      return false;
-    }
-
-    navigate("/quiz");
+    navigate("/selectquiz");
   };
   return (
     <Box
@@ -52,29 +46,8 @@ function Home() {
           Welcome to our quiz app !
         </Typography>
         {user.username ? (
-          <Box display="flex" justifyContent="space-between" mt={3} pr={5}>
-            <Box flex={2}>
-              <FormControl fullWidth sx={{ marginTop: 3 }}>
-                <InputLabel id="demo-simple-select-label">Category</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Category"
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  <MenuItem selected={category === "sicence"} value="science">
-                    Science
-                  </MenuItem>
-                  <MenuItem selected={category === "spor"} value="spor">
-                    Spor
-                  </MenuItem>
-                  <MenuItem selected={category === "movies"} value="movies">
-                    Movies
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-            <Box flex={1} position="relative" px={2}>
+          <Box display="flex" justifyContent="center" mt={3} pr={5}>
+            <Box px={2}>
               <Button
                 endIcon={<SendIcon />}
                 onClick={handleStart}
@@ -86,10 +59,6 @@ function Home() {
                   fontWeight: "bolder",
                   fontSize: 20,
                   color: "#fff",
-                  position: "absolute",
-                  top: "50%",
-                  right: "50%",
-                  transform: "translate(60%, -50%)",
                 }}
               >
                 Start

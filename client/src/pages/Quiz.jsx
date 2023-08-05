@@ -10,30 +10,56 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Timer from "../components/Timer";
 import Stepperr from "../components/Stepper";
-import { useGetAllQuizQuery } from "../redux/api";
+import {
+  useGetSingleQuizQuery,
+  useGetSingleQuizQuestionQuery,
+} from "../redux/api";
+import { useDispatch, useSelector } from "react-redux";
+import { setResult } from "../redux/resultSlice";
 
 function Quiz() {
   const theme = useTheme();
+  const { slug } = useParams();
   const [trace, setTrace] = useState(0);
-  const [answer, setAnswer] = useState("");
-  const [answers, setAnswers] = useState([]);
+  const [answers, setAnswers] = useState({});
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { username } = useSelector((state) => state.user.user);
 
-  const { data } = useGetAllQuizQuery();
-  const questions = data?.allQuiz[0].questions;
-  const question = questions && questions[trace];
+  const { data } = useGetSingleQuizQuestionQuery({ slug, trace });
+
+  const handleChange = (e) => {
+    setAnswers((prev) => ({
+      ...prev,
+      [trace]: e.target.value,
+    }));
+  };
+
+  const handleFinish = () => {
+    dispatch(
+      setResult({
+        username: username,
+        answers: answers,
+        quizName: data.name,
+      })
+    );
+  };
 
   const handleNext = () => {
-    if (trace < questions?.length - 1) {
-      setAnswer("")
+    if (trace >= data?.length - 1) {
+      handleFinish();
+      navigate("/result");
+    } else {
       setTrace((prev) => prev + 1);
-    } else navigate("/result");
+    }
   };
+
   const handlePrev = () => {
-    if (trace > 0) setTrace((prev) => prev - 1);
+    if (trace < 1) return false;
+    setTrace((prev) => prev - 1);
   };
 
   return (
@@ -45,14 +71,14 @@ function Quiz() {
       borderRadius={4}
       height="100%"
     >
-      {question && (
+      {data?.question && (
         <>
           <Box p={5} borderRight="1px dotted grey">
             <Typography mt={5} fontSize={20}>
-              {trace + 1 + ". " + question.desc}
+              {trace + 1 + ". " + data?.question.desc}
             </Typography>
             <Typography mt={4} fontSize={18} fontWeight="bold">
-              Which answer is correct ?
+              {data?.question.main}
             </Typography>
           </Box>
           <Box p={5} mt={2}>
@@ -60,13 +86,13 @@ function Quiz() {
               <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
                 name="radio-buttons-group"
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
+                onChange={handleChange}
               >
-                {question.options.map((item, i) => (
+                {data?.question.options.map((item, i) => (
                   <FormControlLabel
+                    checked={+answers[trace] === i}
                     key={i}
-                    value={item}
+                    value={i}
                     control={<Radio />}
                     label={item}
                     style={{ marginTop: 20 }}
@@ -102,7 +128,7 @@ function Quiz() {
           Prev
         </Button>
         <Box flex={1}>
-          <Stepperr count={questions?.length} active={trace} />
+          <Stepperr count={data?.length} active={trace} />
         </Box>
         <Button
           onClick={handleNext}

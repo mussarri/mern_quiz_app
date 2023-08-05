@@ -7,6 +7,22 @@ export const quizApi = createApi({
     getAllQuiz: builder.query({
       query: () => `quiz`,
     }),
+    getSingleQuizQuestion: builder.query({
+      query: ({ slug, trace }) => ({
+        url: `quiz/${slug}`,
+        params: {
+          trace: trace,
+        },
+      }),
+    }),
+    getSingleQuizAnswers: builder.query({
+      query: ({ slug }) => ({
+        url: `quiz/result`,
+        params: {
+          quizName: slug,
+        },
+      }),
+    }),
     createQuery: builder.mutation({
       query: (data) => ({
         url: "quiz",
@@ -22,4 +38,9 @@ export const quizApi = createApi({
   }),
 });
 
-export const { useGetAllQuizQuery, useCreateQueryMutation } = quizApi;
+export const {
+  useGetAllQuizQuery,
+  useCreateQueryMutation,
+  useGetSingleQuizQuestionQuery,
+  useGetSingleQuizAnswersQuery,
+} = quizApi;
