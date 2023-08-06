@@ -1,29 +1,22 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
-} from "@mui/material";
-import React, { useState } from "react";
+import { Box, Button, Typography } from "@mui/material";
+import React, { useContext } from "react";
 import img from "../components/choose.png";
 import { useTheme } from "@emotion/react";
 import SendIcon from "@mui/icons-material/Send";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { UserContext } from "../App";
 
 function Home() {
   const theme = useTheme();
   const navigate = useNavigate();
-  const [category, setCategory] = useState();
-
-  const user = useSelector((state) => state.user.user);
 
   const handleStart = () => {
     navigate("/selectquiz");
   };
+
+  const { user } = useContext(UserContext);
+  
+
   return (
     <Box
       display="grid"

@@ -8,17 +8,15 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import { useNavigate, useParams } from "react-router-dom";
 import Timer from "../components/Timer";
 import Stepperr from "../components/Stepper";
-import {
-  useGetSingleQuizQuery,
-  useGetSingleQuizQuestionQuery,
-} from "../redux/api";
-import { useDispatch, useSelector } from "react-redux";
+import { useGetSingleQuizQuestionQuery } from "../redux/api";
 import { setResult } from "../redux/resultSlice";
+import { UserContext } from "../App";
+import { useDispatch } from "react-redux";
 
 function Quiz() {
   const theme = useTheme();
@@ -27,9 +25,10 @@ function Quiz() {
   const [answers, setAnswers] = useState({});
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { username } = useSelector((state) => state.user.user);
 
-  const { data } = useGetSingleQuizQuestionQuery({ slug, trace });
+  const { user } = useContext(UserContext);
+
+  const { isLoading, data } = useGetSingleQuizQuestionQuery({ slug, trace });
 
   const handleChange = (e) => {
     setAnswers((prev) => ({
@@ -41,7 +40,7 @@ function Quiz() {
   const handleFinish = () => {
     dispatch(
       setResult({
-        username: username,
+        username: user.username,
         answers: answers,
         quizName: data.name,
       })
@@ -103,9 +102,7 @@ function Quiz() {
           </Box>
         </>
       )}
-
-      <Timer time={50} />
-
+      <Timer time={data?.length * 10} />
       <Box
         position="absolute"
         bottom={0}

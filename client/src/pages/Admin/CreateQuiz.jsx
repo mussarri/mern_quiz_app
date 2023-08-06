@@ -13,7 +13,8 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import { instance } from "./Layout";
+import { instance } from "../Layout";
+import { useNavigate } from "react-router-dom";
 
 function CreateQuiz() {
   const theme = useTheme();
@@ -34,6 +35,8 @@ function CreateQuiz() {
     "Option 3",
     "Option 4",
   ]);
+
+  const navigate = useNavigate();
 
   const handleRemove = (i) => {
     setQuestions((prev) => [...prev.filter((item, index) => index !== i)]);
@@ -75,7 +78,9 @@ function CreateQuiz() {
     if (post) return false;
     let postedQuestions = errors
       ? [...questions]
-      : [...questions, { desc, main, options, true: correct }];
+      : main
+      ? [...questions, { desc, main, options, true: correct }]
+      : [...questions];
     const data = JSON.stringify({ questions: postedQuestions });
     setPost(true);
     handleClick();
@@ -87,18 +92,18 @@ function CreateQuiz() {
     formData.set("questions", data);
 
     instance
-      .post("/quiz", formData)
+      .post("admin/create", formData)
       .then((res) => {
         console.log(res);
         alert(`Quiz saved succesfully`);
+        navigate("/admin/quizzes");
       })
       .catch((err) => {
         console.log(err.response.data);
-        if (err.response.data.message.message) {
-          setErrors(err.response.data.message.message);
-        }
         if (err.response.data.message?.code === 11000) {
           setErrors("Duplicated error, please use different quiz name.");
+        } else if (err.response.data.message.message) {
+          setErrors(err.response.data.message.message);
         }
       });
   };
@@ -136,14 +141,21 @@ function CreateQuiz() {
             label="Category"
             onChange={(e) => setCategory(e.target.value)}
           >
+            <MenuItem selected={category === "movies"} value="movies">
+              Movies
+            </MenuItem>
+            <MenuItem selected={category === "religions"} value="religions">
+              Religions
+            </MenuItem>
             <MenuItem selected={category === "sicence"} value="science">
               Science
             </MenuItem>
             <MenuItem selected={category === "spor"} value="spor">
               Spor
             </MenuItem>
-            <MenuItem selected={category === "movies"} value="movies">
-              Movies
+
+            <MenuItem selected={category === "technology"} value="technology">
+              Technology
             </MenuItem>
           </Select>
         </FormControl>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Alert,
   Avatar,
@@ -10,17 +10,17 @@ import {
   Paper,
 } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import { useDispatch } from "react-redux";
-import { setUser } from "../redux/userSlice";
+
 import { useNavigate } from "react-router-dom";
 import { instance } from "./Layout";
+import { UserContext } from "../App";
 
 function Register() {
   const [errors, setErrors] = useState();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { setUser } = useContext(UserContext);
 
   async function loginHandler(e) {
     e.preventDefault();
@@ -35,12 +35,10 @@ function Register() {
       })
       .then((res) => {
         alert(`User logined succesfully`);
-        dispatch(
-          setUser({
-            username: res.data.isUser.username,
-            role: res.data.isUser.role,
-          })
-        );
+        setUser({
+          username: res.data.isUser.username,
+          role: res.data.isUser.role,
+        });
         navigate("/");
       })
       .catch((err) => {

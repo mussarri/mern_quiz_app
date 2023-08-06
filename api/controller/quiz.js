@@ -44,29 +44,9 @@ export const getSingleQuizAnswers = async (req, res) => {
   }
 };
 
-export const createQuiz = async (req, res) => {
-  try {
-    const { category, questions } = req.body;
-    const name = slugify(req.body.name, "-");
-    const questionsArray = JSON.parse(questions).questions;
-    console.log(questionsArray);
 
-    const quiz = {
-      name: name,
-      category: category,
-      questions: questionsArray,
-      image: req.file?.filename || "",
-    };
-
-    const newQuiz = await Quiz.create(quiz);
-    res.status(200).json({ newQuiz });
-  } catch (error) {
-    res.status(404).json({ message: error });
-  }
-};
 
 export const saveResult = async (req, res) => {
- 
   try {
     const { username, quizName, answers } = req.body;
     const quiz = await Quiz.findOne({ name: quizName });
@@ -76,10 +56,8 @@ export const saveResult = async (req, res) => {
     const newResult = await Result.create({
       quizId: quiz._id,
       userId: user._id,
-      userAnswers: JSON.stringify(answers)
+      userAnswers: JSON.stringify(answers),
     });
-
-    console.log(newResult);
 
     res.status(200).json({ newResult });
   } catch (error) {

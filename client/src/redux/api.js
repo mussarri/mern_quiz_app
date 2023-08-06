@@ -7,6 +7,18 @@ export const quizApi = createApi({
     getAllQuiz: builder.query({
       query: () => `quiz`,
     }),
+    getAllUsers: builder.query({
+      query: () => `admin/users`,
+    }),
+    getSingleUser: builder.query({
+      query: ({ username }) => `admin/user/${username}`,
+    }),
+    getUserResults: builder.query({
+      query: ({ username }) => `admin/user/${username}/results`,
+    }),
+    getSingleQuiz: builder.query({
+      query: ({ slug }) => `admin/quizzes/${slug}`,
+    }),
     getSingleQuizQuestion: builder.query({
       query: ({ slug, trace }) => ({
         url: `quiz/${slug}`,
@@ -23,24 +35,15 @@ export const quizApi = createApi({
         },
       }),
     }),
-    createQuery: builder.mutation({
-      query: (data) => ({
-        url: "quiz",
-        method: "POST",
-        body: data,
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-        validateStatus: (response, result) =>
-          response.status === 200 && !result.isError,
-      }),
-    }),
   }),
 });
 
 export const {
   useGetAllQuizQuery,
-  useCreateQueryMutation,
+  useGetAllUsersQuery,
+  useGetSingleUserQuery,
+  useGetUserResultsQuery,
+  useGetSingleQuizQuery,
   useGetSingleQuizQuestionQuery,
   useGetSingleQuizAnswersQuery,
 } = quizApi;

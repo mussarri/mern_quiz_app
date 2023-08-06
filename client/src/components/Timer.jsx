@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 function Timer({ time }) {
   const theme = useTheme();
   const navigate = useNavigate();
-  const [showTime, setShowTime] = useState(time || 60);
+  const [showTime, setShowTime] = useState(time);
   
   useEffect(() => {
     const interval = setInterval(() => {

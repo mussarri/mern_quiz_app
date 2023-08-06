@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   Box,
   Button,
@@ -28,14 +28,18 @@ function Result() {
       .catch((err) => console.log(err));
   }, [result]);
 
-  let correctAnswer = 0;
-  let totalPoint = 0;
-  questions?.forEach((current, i) => {
-    if (current.true === +result.answers[i]) {
-      totalPoint += 10;
-      correctAnswer++;
-    }
-  });
+  const { correctAnswer, totalPoint } = useMemo(() => {
+    let correctAnswer = 0;
+    let totalPoint = 0;
+    questions?.forEach((current, i) => {
+      if (current.true === +result.answers[i]) {
+        totalPoint += (100/questions.length);
+        correctAnswer++;
+      }
+    });
+    return { correctAnswer, totalPoint };
+  }, [questions, result.answers]);
+
 
   if (!result.quizName) return <Navigate to={"/"} />;
 
@@ -52,7 +56,7 @@ function Result() {
           Correct Count: <b> {correctAnswer}</b>{" "}
         </Typography>
         <Typography mb={2}>
-          Question Count: <b> {questions.length}</b>
+          Question Count: <b> {questions?.length}</b>
         </Typography>
         <Typography mb={2}>
           Total Point: <b> {totalPoint}</b>

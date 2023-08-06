@@ -4,27 +4,26 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setUser } from "../redux/userSlice";
+import { UserContext } from "../App";
 
 export const instance = axios.create({
   withCredentials: true,
   baseURL: "http://localhost:4000",
 });
 function Layout() {
-  const dispatch = useDispatch();
+
+  const { setUser } = React.useContext(UserContext);
+  
   React.useEffect(() => {
     async function refresh() {
       instance
         .get("/auth/refresh")
         .then(function (res) {
           // handle success
-          console.log(res);
-          dispatch(
-            setUser({
-              username: res.data.decoded.username,
-              role: res.data.decoded.role || "user",
-            })
-          );
+          setUser({
+            username: res.data.decoded.username,
+            role: res.data.decoded.role || "user",
+          });
         })
         .catch(function (err) {
           // handle error
@@ -32,7 +31,7 @@ function Layout() {
         });
     }
     refresh();
-  }, [dispatch]);
+  }, [setUser]);
   return (
     <>
       <Navbar />
