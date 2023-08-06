@@ -28,7 +28,7 @@ function Quiz() {
 
   const { user } = useContext(UserContext);
 
-  const { isLoading, data } = useGetSingleQuizQuestionQuery({ slug, trace });
+  const { data } = useGetSingleQuizQuestionQuery({ slug, trace });
 
   const handleChange = (e) => {
     setAnswers((prev) => ({
