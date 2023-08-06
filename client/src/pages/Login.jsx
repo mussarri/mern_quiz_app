@@ -34,6 +34,7 @@ function Register() {
         password,
       })
       .then((res) => {
+        console.log(res);
         alert(`User logined succesfully`);
         setUser({
           username: res.data.isUser.username,
@@ -42,6 +43,7 @@ function Register() {
         navigate("/");
       })
       .catch((err) => {
+        console.log(err);
         if (err.response) {
           if (err.response.status === 401) setErrors("Invalid credentials");
           else setErrors(err.response.data);
