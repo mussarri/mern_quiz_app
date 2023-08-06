@@ -15,7 +15,6 @@ function Home() {
   };
 
   const { user } = useContext(UserContext);
-  
 
   return (
     <Box

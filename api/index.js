@@ -7,9 +7,9 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import "dotenv/config";
 import quizRouter from "./route/quiz.js";
-import authRouter from "./route/auth.js"
-import adminRouter from "./route/admin.js"
-import fs from 'node:fs'
+import authRouter from "./route/auth.js";
+import adminRouter from "./route/admin.js";
+import fs from "node:fs";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -18,9 +18,9 @@ const __dirname = dirname(__filename);
 // image upload
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    fs.mkdir('./uploads/',(err)=>{
-      cb(null, './uploads/');
-   });
+    fs.mkdir("./uploads/", (err) => {
+      cb(null, "./uploads/");
+    });
   },
   filename: (req, file, cb) => {
     cb(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
@@ -38,7 +38,8 @@ mongoose.connect(process.env.MONGO_URL, {
 mongoose.connection.on("open", () => console.log("Connected to db"));
 
 const corsOptions = {
-  origin: process.env.FRONT_END_URL || "http://localhost:3000/", // Adjust the origin to match your frontend URL
+  origin: process.env.FRONT_END_URL,
+  // Adjust the origin to match your frontend URL
   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
 };
 
