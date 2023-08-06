@@ -48,12 +48,12 @@ function App() {
               element={<AdminRoute isAdmin={user.role === "admin"} />}
             >
               <Route index element={<AdminHome />} />
-              <Route path="/users" element={<Users />} />
-              <Route path="/user/:username" element={<SingleUser />} />
-              <Route path="/quizzes" element={<Quizzes />} />
-              <Route path="/quizzes/:slug" element={<SingleQuiz />} />
-              <Route path="/quizzes/:slug/edit" element={<SingleQuiz />} />
-              <Route path="/createquiz" element={<CreateQuiz />} />
+              <Route path="users" element={<Users />} />
+              <Route path="user/:username" element={<SingleUser />} />
+              <Route path="quizzes" element={<Quizzes />} />
+              <Route path="quizzes/:slug" element={<SingleQuiz />} />
+              <Route path="quizzes/:slug/edit" element={<SingleQuiz />} />
+              <Route path="createquiz" element={<CreateQuiz />} />
             </Route>
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
@@ -66,7 +66,7 @@ function App() {
             </Route>
             <Route path="*" element={<Error />} />
           </Routes>
-        </BrowserRouter>
+        </BrowserRouter> 
       </UserContext.Provider>
     </ThemeProvider>
   );
