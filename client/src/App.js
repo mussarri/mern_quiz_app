@@ -59,10 +59,10 @@ function App() {
               <Route index element={<Home />} />
               <Route path="profile" element={<Profile />} />
               <Route path="result" element={<Result />} />
-              <Route path="/quiz/:slug" element={<Quiz />} />
-              <Route path="/selectquiz" element={<SelectQuiz />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route path="quiz/:slug" element={<Quiz />} />
+              <Route path="selectquiz" element={<SelectQuiz />} />
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<Register />} />
             </Route>
             <Route path="*" element={<Error />} />
           </Routes>

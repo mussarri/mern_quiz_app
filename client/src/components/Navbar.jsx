@@ -83,68 +83,65 @@ function Navbar() {
             >
               <DarkModeOutlined />
             </IconButton>
-            {user.username ? (
-              <>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar
-                      alt="Remy Sharp"
-                      src=""
-                      sx={{ background: theme.palette.primary.main }}
-                    />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  {user.role === "admin" && (
-                    <MenuItem>
-                      <Link
-                        style={{ width: "100%" }}
-                        to={"/admin"}
-                        textAlign="center"
-                      >
-                        Admin
-                      </Link>
-                    </MenuItem>
-                  )}
 
-                  <MenuItem>
-                    <Link
-                      style={{ width: "100%" }}
-                      to={"/profile"}
-                      textAlign="center"
-                    >
-                      Profile
-                    </Link>
-                  </MenuItem>
+            <>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar
+                    alt="Remy Sharp"
+                    src=""
+                    sx={{ background: theme.palette.primary.main }}
+                  />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem>
+                  <Link
+                    style={{ width: "100%" }}
+                    to={"/admin"}
+                    textAlign="center"
+                  >
+                    Admin
+                  </Link>
+                </MenuItem>
 
-                  <MenuItem onClick={() => handleLogout()}>
-                    <Link textAlign="center">Logout</Link>
-                  </MenuItem>
-                </Menu>
-              </>
-            ) : (
-              <>
-                <Link style={{ marginRight: 10 }} to={"/login"}>
-                  Login
-                </Link>
-                <Link to={"/register"}>Register</Link>
-              </>
-            )}
+                <MenuItem>
+                  <Link
+                    style={{ width: "100%" }}
+                    to={"/profile"}
+                    textAlign="center"
+                  >
+                    Profile
+                  </Link>
+                </MenuItem>
+
+                <MenuItem onClick={() => handleLogout()}>
+                  <Link textAlign="center">Logout</Link>
+                </MenuItem>
+              </Menu>
+            </>
+
+            <>
+              <Link style={{ marginRight: 10 }} to={"/login"}>
+                Login
+              </Link>
+              <Link to={"/register"}>Register</Link>
+            </>
           </Box>
         </Toolbar>
       </Container>
