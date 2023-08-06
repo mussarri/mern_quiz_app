@@ -3,12 +3,11 @@ import { Outlet } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import axios from "axios";
-import { useDispatch } from "react-redux";
 import { UserContext } from "../App";
 
 export const instance = axios.create({
   withCredentials: true,
-  baseURL: "http://localhost:4000",
+  baseURL: process.env.REACT_APP_BACKEND_URL,
 });
 function Layout() {
 
