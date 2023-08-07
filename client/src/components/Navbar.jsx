@@ -10,7 +10,7 @@ import Container from "@mui/material/Container";
 import QuizIcon from "@mui/icons-material/Quiz";
 import { useTheme } from "@emotion/react";
 import { DarkModeOutlined } from "@mui/icons-material";
-import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
+import { Avatar, Menu, MenuItem, Tooltip, useMediaQuery } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import { useDispatch } from "react-redux";
@@ -44,9 +44,11 @@ function Navbar() {
     setAnchorElUser(null);
   };
 
+  const sm = useMediaQuery("(min-width:500px)");
+
   return (
     <AppBar position="static" sx={{ boxShadow: theme.shadows[6] }}>
-      <Container style={{ maxWidth: 1150, padding: "0 30px" }}>
+      <Container style={{ maxWidth: 1150, padding: sm ? "0 30px" : "0 10px" }}>
         <Toolbar
           disableGutters
           display="flex"

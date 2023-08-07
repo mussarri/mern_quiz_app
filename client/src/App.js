@@ -66,7 +66,7 @@ function App() {
             </Route>
             <Route path="*" element={<Error />} />
           </Routes>
-        </BrowserRouter> 
+        </BrowserRouter>
       </UserContext.Provider>
     </ThemeProvider>
   );

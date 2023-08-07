@@ -11,6 +11,7 @@ import {
   TextField,
   TextareaAutosize,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import React, { useState } from "react";
 import { instance } from "../Layout";
@@ -18,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 
 function CreateQuiz() {
   const theme = useTheme();
+  const sm = useMediaQuery("(min-width:500px)");
   const [post, setPost] = useState(false);
   const [errors, setErrors] = useState();
 
@@ -119,7 +121,7 @@ function CreateQuiz() {
           {errors}
         </Alert>
       )}
-      <Box display="flex" gap={3}>
+      <Box display="flex" flexDirection={sm ? "row" : "column"} gap={3}>
         <Box>
           <TextField
             placeholder="Quiz Name *"
@@ -247,6 +249,7 @@ function Question({
     resize: "none",
     outline: "none",
   };
+  const sm = useMediaQuery("(min-width:500px)");
 
   return (
     <>
@@ -262,17 +265,23 @@ function Question({
           </Button>
         )}
         <Typography fontWeight={"bolder"}>{index + 1})</Typography>
-        <Box flex={1} marginTop={1} display="flex" gap={2}>
+        <Box
+          flex={1}
+          marginTop={1}
+          display="flex"
+          flexDirection={sm ? "row" : "column"}
+          gap={2}
+        >
           <TextareaAutosize
             placeholder="Question description (optional)"
-            style={{ ...textareaSyle, flex: 2 }}
+            style={{ ...textareaSyle, flex: sm && 2 }}
             value={item?.desc || questionDesc}
             disabled={disable}
             onChange={isQuestion || ((e) => setQuestionDesc(e.target.value))}
           />
           <TextareaAutosize
             placeholder="Question main text"
-            style={{ ...textareaSyle, flex: 1 }}
+            style={{ ...textareaSyle, flex: sm && 1 }}
             value={item?.main || questionMain}
             disabled={disable}
             onChange={isQuestion || ((e) => setQuestionMain(e.target.value))}

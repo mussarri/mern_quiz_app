@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, useMediaQuery } from "@mui/material";
 import React, { useContext } from "react";
 import img from "../components/choose.png";
 import { useTheme } from "@emotion/react";
@@ -9,6 +9,21 @@ import { UserContext } from "../App";
 function Home() {
   const theme = useTheme();
   const navigate = useNavigate();
+  const lg = useMediaQuery("(min-width:1100px)");
+  const md = useMediaQuery("(min-width:860px)");
+  const sm = useMediaQuery("(min-width:500px)");
+  const xs = useMediaQuery("(min-width:350px)");
+
+  const buttonStyle = {
+    borderRadius: 40,
+    background: theme.palette.primary.main,
+    fontWeight: "bolder",
+    color: "#fff",
+    padding: 10,
+    marginLeft: 10,
+    width: sm ? 150 : 130,
+    fontSize: sm ? 20 : 17,
+  };
 
   const handleStart = () => {
     navigate("/selectquiz");
@@ -18,23 +33,23 @@ function Home() {
 
   return (
     <Box
-      display="grid"
+      display={md ? "grid" : ""}
       gridTemplateColumns="repeat(2, 1fr)"
-      sx={{ background: theme.palette.background.paper }}
+      sx={{ background: theme.palette.background.paper, overflowX: "hidden" }}
       borderRadius={4}
       height="100%"
     >
-      <Box p={2} display="flex" justifyContent={"center"}>
+      <Box p={2} display={lg ? "flex" : ""} justifyContent={"center"}>
         <img
           src={img}
           alt=""
-          width="80%"
+          width={lg ? "80%" : xs ? "400px" : "100%"}
           height="auto"
           style={{ margin: "50px auto" }}
         />
       </Box>
-      <Box mt={3}>
-        <Typography p={2} variant="h1">
+      <Box mt={md ? 3 : -1}>
+        <Typography py={md ? 2 : 0} px={2} variant={md ? "h1" : "h3"}>
           Welcome to our quiz app !
         </Typography>
         {user.username ? (
@@ -62,31 +77,14 @@ function Home() {
             <Button
               endIcon={<SendIcon />}
               onClick={() => navigate("/login")}
-              style={{
-                borderRadius: 40,
-                background: theme.palette.primary.main,
-                width: 150,
-                fontWeight: "bolder",
-                fontSize: 20,
-                color: "#fff",
-                padding: 10,
-              }}
+              style={buttonStyle}
             >
               Login
             </Button>
             <Button
               endIcon={<SendIcon />}
               onClick={() => navigate("/register")}
-              style={{
-                borderRadius: 40,
-                background: theme.palette.primary.main,
-                width: 200,
-                fontWeight: "bolder",
-                fontSize: 20,
-                color: "#fff",
-                padding: 10,
-                marginLeft: 10,
-              }}
+              style={buttonStyle}
             >
               Register
             </Button>

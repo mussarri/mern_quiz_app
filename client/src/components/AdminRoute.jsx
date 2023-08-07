@@ -1,15 +1,24 @@
 import {
   Box,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
+  useMediaQuery,
 } from "@mui/material";
-import React from "react";
-import {  Outlet, useNavigate } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close";
+import MenuIcon from "@mui/icons-material/Menu";
+import React, { useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useTheme } from "@emotion/react";
 
 const AdminRoute = ({ isAdmin }) => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const lg = useMediaQuery("(min-width:1100px)");
+
+  const [isOpen, setIsopen] = useState(lg ? true : false);
 
   const box = {
     borderRight: "1px solid grey",
@@ -20,10 +29,25 @@ const AdminRoute = ({ isAdmin }) => {
   const handleClick = (link) => {
     navigate(link);
   };
+  const handleOpen = () => {
+    setIsopen(!isOpen);
+  };
 
   return (
-    <Box display="grid" gridTemplateColumns="1fr 5fr" overflow="hidden">
-      <Box sx={box}>
+    <Box display={lg && "flex"} overflow="hidden">
+      <Box
+        sx={{ ...box, background: theme.palette.background.paper }}
+        zIndex={2}
+        display={!isOpen && "none"}
+        position={lg ? "relative" : "absolute"}
+      >
+        {isOpen && (
+          <Box sx={{ textAlign: "right" }}>
+            <IconButton onClick={handleOpen}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        )}
         <List>
           <ListItem disablePadding>
             <ListItemButton onClick={() => handleClick("/admin")}>
@@ -47,7 +71,14 @@ const AdminRoute = ({ isAdmin }) => {
           </ListItem>
         </List>
       </Box>
-      <Box p={3} sx={box}>
+      <Box flex={1} p={3} pt={5} sx={box} position="relative">
+        {!isOpen && (
+          <Box sx={{ position: "absolute", left: 0, top: 0 }}>
+            <IconButton onClick={handleOpen}>
+              <MenuIcon />
+            </IconButton>
+          </Box>
+        )}
         <Outlet />
       </Box>
     </Box>
