@@ -84,7 +84,7 @@ function SelectQuiz() {
                 width="100%"
                 style={{ aspectRatio: 1.5, objectFit: "contain" }}
                 src={
-                  process.env.REACT_APP_BACKEND_URL + "uploads/" + item.image
+                  process.env.REACT_APP_BACKEND_URL + "/uploads/" + item.image
                 }
                 alt=""
               />
