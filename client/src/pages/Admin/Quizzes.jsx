@@ -68,7 +68,11 @@ function Quizzes() {
                 <TableCell align="right">
                   <img
                     width={50}
-                    src={"http://localhost:4000/uploads/" + quiz.image}
+                    src={
+                      process.env.REACT_APP_BACKEND_URL +
+                      "/uploads/" +
+                      quiz.image
+                    }
                     alt=""
                   />
                 </TableCell>

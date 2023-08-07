@@ -83,7 +83,9 @@ function SelectQuiz() {
               <img
                 width="100%"
                 style={{ aspectRatio: 1.5, objectFit: "contain" }}
-                src={"http://localhost:4000/uploads/" + item.image}
+                src={
+                  process.env.REACT_APP_BACKEND_URL + "uploads/" + item.image
+                }
                 alt=""
               />
               <Typography
