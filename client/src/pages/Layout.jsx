@@ -7,7 +7,7 @@ import { UserContext } from "../App";
 
 export const instance = axios.create({
   withCredentials: true,
-  baseURL: "https://mern-quiz-backend-selb.onrender.com",
+  baseURL: process.env.REACT_APP_BACKEND_URL,
 });
 function Layout() {
 
