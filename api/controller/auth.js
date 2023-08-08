@@ -93,8 +93,6 @@ export const refreshController = (req, res) => {
         return res.json({ accessToken, decoded });
       }
     });
-  } else {
-    res.status(404).json("Error");
   }
 };
 
