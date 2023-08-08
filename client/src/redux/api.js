@@ -55,9 +55,7 @@ export const quizApi = createApi({
     registerUser: builder.mutation({
       query: (body) => ({
         url: `quiz/register`,
-        params: {
-          body: body,
-        },
+        body: body,
       }),
     }),
     refreshUser: builder.query({
