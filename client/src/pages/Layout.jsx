@@ -15,7 +15,6 @@ function Layout() {
   const { setUser } = React.useContext(UserContext);
 
   const { data } = useRefreshUserQuery();
-  console.log(data);
 
   const refreshUser = () =>
     setUser({

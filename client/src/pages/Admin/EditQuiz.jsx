@@ -6,6 +6,7 @@ import { instance } from "../Layout";
 function SingleQuiz() {
   const { slug } = useParams();
   const { data } = useGetSingleQuizQuery();
+  
   const handleUpdata = () => {
     instance
       .patch("admin/quizzes/" + slug + "/edit")

@@ -56,7 +56,7 @@ export const quizApi = createApi({
       query: (body) => ({
         url: `quiz/register`,
         params: {
-          quizName: body,
+          body: body,
         },
       }),
     }),

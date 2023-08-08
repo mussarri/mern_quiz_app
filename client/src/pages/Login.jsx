@@ -8,12 +8,9 @@ import {
   Input,
   InputLabel,
   Paper,
-  Typography,
 } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 
-import { useNavigate } from "react-router-dom";
-import { instance } from "./Layout";
 import { UserContext } from "../App";
 import { useLoginUserMutation } from "../redux/api";
 
@@ -21,7 +18,6 @@ function Register() {
   const [errors, setErrors] = useState();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
-  const navigate = useNavigate();
   const { setUser } = useContext(UserContext);
   const [loginUser, result] = useLoginUserMutation();
 
