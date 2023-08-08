@@ -78,7 +78,7 @@ function Quizzes() {
                 </TableCell>
                 <TableCell align="right">{titleize(quiz.name)}</TableCell>
                 <TableCell align="right">{titleize(quiz.category)}</TableCell>
-                <TableCell align="right">{quiz.questions.length}</TableCell>
+                <TableCell align="right">{quiz.length}</TableCell>
                 <TableCell style={{ display: "flex" }} align="right">
                   <IconButton onClick={() => handleDelete(quiz.name)}>
                     <DeleteIcon />

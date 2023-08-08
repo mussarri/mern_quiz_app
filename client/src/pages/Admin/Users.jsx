@@ -20,7 +20,6 @@ import { instance } from "../Layout";
 
 function Users() {
   const { data, error } = useGetAllUsersQuery();
-  console.log(error);
   const handleDelete = (name) => {
     instance
       .delete("admin/quizzes/" + name)

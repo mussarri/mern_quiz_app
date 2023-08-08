@@ -80,9 +80,12 @@ export const getUserResults = async (req, res) => {
       },
       {
         $project: {
-          useranswers: 1,
+          userAnswers: 1,
           userId: 1,
+          totalPoint: 1,
+          correctAnswer: 1,
           quiz: {
+            category: 1,
             name: 1,
           },
         },

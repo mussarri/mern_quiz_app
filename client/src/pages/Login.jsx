@@ -8,12 +8,14 @@ import {
   Input,
   InputLabel,
   Paper,
+  Typography,
 } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 
 import { useNavigate } from "react-router-dom";
 import { instance } from "./Layout";
 import { UserContext } from "../App";
+import { useLoginUserMutation } from "../redux/api";
 
 function Register() {
   const [errors, setErrors] = useState();
@@ -21,34 +23,28 @@ function Register() {
   const [password, setPassword] = useState();
   const navigate = useNavigate();
   const { setUser } = useContext(UserContext);
+  const [loginUser, result] = useLoginUserMutation();
 
   async function loginHandler(e) {
-    e.preventDefault();
     if (!username || !password) {
       alert("please fill the form");
       return false;
     }
-    instance
-      .post("/auth/login", {
-        username,
-        password,
-      })
-      .then((res) => {
-        console.log(res);
-        alert(`User logined succesfully`);
-        setUser({
-          username: res.data.isUser.username,
-          role: res.data.isUser.role,
-        });
-        navigate("/");
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err.response) {
-          if (err.response.status === 401) setErrors("Invalid credentials");
-          else setErrors(err.response.data);
-        }
+    const res = await loginUser({
+      username,
+      password,
+    });
+    if (res.data) {
+      alert(`User logined succesfully`);
+      setUser({
+        username: res.data.isUser.username,
+        role: res.data.isUser.role,
       });
+    } else if (res.error) {
+      setErrors(`${res.error.data}`);
+    } else {
+      alert("Something went wrong");
+    }
   }
 
   return (
@@ -80,38 +76,44 @@ function Register() {
           </Alert>
         )}
 
-        <form style={{ width: "100%" }} onSubmit={false}>
-          <FormControl required fullWidth margin="normal">
-            <InputLabel>Username</InputLabel>
-            <Input
-              name="username"
-              // placeholder="username *"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </FormControl>
+        {result.isLoading ? (
+          <Box height={200}>
+            <p>Loading</p>
+          </Box>
+        ) : (
+          <form style={{ width: "100%" }} onSubmit={false}>
+            <FormControl required fullWidth margin="normal">
+              <InputLabel>Username</InputLabel>
+              <Input
+                name="username"
+                // placeholder="username *"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </FormControl>
 
-          <FormControl required fullWidth margin="normal">
-            <InputLabel>Password</InputLabel>
-            <Input
-              name="password"
-              // placeholder="password *"
-              // type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </FormControl>
+            <FormControl required fullWidth margin="normal">
+              <InputLabel>Password</InputLabel>
+              <Input
+                name="password"
+                // placeholder="password *"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </FormControl>
 
-          <Button
-            fullWidth
-            variant="outlined"
-            type="submit"
-            sx={{ marginTop: 5 }}
-            onClick={loginHandler}
-          >
-            Login
-          </Button>
-        </form>
+            <Button
+              fullWidth
+              variant="outlined"
+              type="submit"
+              sx={{ marginTop: 5 }}
+              onClick={loginHandler}
+            >
+              Login
+            </Button>
+          </form>
+        )}
       </Paper>
     </Box>
   );

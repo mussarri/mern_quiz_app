@@ -24,6 +24,7 @@ import Users from "./pages/Admin/Users";
 import Quizzes from "./pages/Admin/Quizzes";
 import SingleQuiz from "./pages/Admin/SingleQuiz";
 import SingleUser from "./pages/Admin/SingleUser";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export const UserContext = createContext();
 
@@ -57,12 +58,16 @@ function App() {
             </Route>
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="result" element={<Result />} />
-              <Route path="quiz/:slug" element={<Quiz />} />
-              <Route path="selectquiz" element={<SelectQuiz />} />
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
+              <Route element={<ProtectedRoute isAllowed={!!user.username} />}>
+                <Route path="profile" element={<Profile />} />
+                <Route path="result" element={<Result />} />
+                <Route path="quiz/:slug" element={<Quiz />} />
+                <Route path="selectquiz" element={<SelectQuiz />} />
+              </Route>
+              <Route element={<ProtectedRoute isAllowed={!user.username} />}>
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
+              </Route>
             </Route>
             <Route path="*" element={<Error />} />
           </Routes>

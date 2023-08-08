@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -17,29 +17,36 @@ import { useGetSingleQuizAnswersQuery } from "../redux/api";
 import { instance } from "./Layout";
 
 function Result() {
+  const [saved, setSaved] = useState(false);
   const result = useSelector((state) => state.result);
   const { data } = useGetSingleQuizAnswersQuery({ slug: result.quizName });
   const questions = data?.quiz?.questions;
 
-  useEffect(() => {
-    instance
-      .post("quiz/result", result)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
-  }, [result]);
-
-  const { correctAnswer, totalPoint } = useMemo(() => {
-    let correctAnswer = 0;
+  const { totalPoint, correctAnswer } = useMemo(() => {
     let totalPoint = 0;
+    let correctAnswer = 0;
     questions?.forEach((current, i) => {
       if (current.true === +result.answers[i]) {
-        totalPoint += (100/questions.length);
+        totalPoint += 100 / questions.length;
         correctAnswer++;
       }
     });
-    return { correctAnswer, totalPoint };
+    return { totalPoint, correctAnswer };
   }, [questions, result.answers]);
+  
+  const saveResult = () => {
+    if (!!totalPoint && !!correctAnswer && !saved) {
+      instance
+        .post("quiz/result", { totalPoint, result, correctAnswer })
+        .then((res) => setSaved(true))
+        .catch((err) => setSaved(true));
+    }
+  };
 
+  useEffect(() => {
+    !saved && saveResult();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!result.quizName) return <Navigate to={"/"} />;
 

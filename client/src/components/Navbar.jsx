@@ -25,13 +25,15 @@ function Navbar() {
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
+  const { setUser } = useContext(UserContext);
+
   const handleLogout = async () => {
     console.log("click");
     instance
       .get("/auth/logout")
       .then((res) => {
         console.log(res);
-        // dispatch(setUser({}));
+        setUser({});
       })
       .catch((err) => console.log(err));
   };

@@ -10,7 +10,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import React, { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 
 const AdminRoute = ({ isAdmin }) => {
@@ -33,10 +33,15 @@ const AdminRoute = ({ isAdmin }) => {
     setIsopen(!isOpen);
   };
 
+  if (!isAdmin) {
+    return <Navigate to={"/"} replace />;
+  }
+
   return (
     <Box display={lg && "flex"} overflow="hidden">
       <Box
         sx={{ ...box, background: theme.palette.background.paper }}
+        flex={lg && "0.16"}
         zIndex={2}
         display={!isOpen && "none"}
         position={lg ? "relative" : "absolute"}

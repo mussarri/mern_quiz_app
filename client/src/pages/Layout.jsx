@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 import { UserContext } from "../App";
+import { useRefreshUserQuery } from "../redux/api";
 
 export const instance = axios.create({
   withCredentials: true,
@@ -11,27 +12,21 @@ export const instance = axios.create({
 });
 
 function Layout() {
-
   const { setUser } = React.useContext(UserContext);
-  
+
+  const { data } = useRefreshUserQuery();
+  console.log(data);
+
+  const refreshUser = () =>
+    setUser({
+      username: data?.decoded.username,
+      role: data?.decoded.role,
+    });
+
   React.useEffect(() => {
-    async function refresh() {
-      instance
-        .get("/auth/refresh")
-        .then(function (res) {
-          // handle success
-          setUser({
-            username: res.data.decoded.username,
-            role: res.data.decoded.role || "user",
-          });
-        })
-        .catch(function (err) {
-          // handle error
-          // console.log(err);
-        });
-    }
-    refresh();
-  }, [setUser]);
+    data && refreshUser();
+  }, [data]);
+
   return (
     <>
       <Navbar />

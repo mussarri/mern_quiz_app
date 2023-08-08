@@ -4,7 +4,9 @@ const resultSchema = new mongoose.Schema(
   {
     quizId: { type: mongoose.Types.ObjectId, ref: "quizSchema" },
     userId: { type: mongoose.Types.ObjectId, ref: "User" },
-    userAnswers: String,
+    correctAnswer: Number,
+    totalPoint: Number,
+    createdAt: { type: Date, default: Date.now() },
   },
   { timestamps: true }
 );

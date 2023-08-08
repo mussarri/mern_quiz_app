@@ -12,7 +12,7 @@ import {
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 
 import { useNavigate } from "react-router-dom";
-import { instance } from "./Layout";
+import { useRegisterUserMutation } from "../redux/api";
 
 function Register() {
   const [errors, setErrors] = useState();
@@ -20,28 +20,24 @@ function Register() {
   const [password, setPassword] = useState();
   const [email, setEmail] = useState();
   const navigate = useNavigate();
+  const [registerUser, result] = useRegisterUserMutation();
 
-  async function createPostHandler(e) {
+  async function handleRegister(e) {
     e.preventDefault();
     if (!username || !password || !email) {
       alert("please fill the form");
       return false;
     }
-    instance
-      .post("/auth/register", {
-        username,
-        email,
-        password,
-      })
-      .then((res) => {
-        setErrors();
-        alert(`${res.data.username} registered succesfully`);
-        navigate("/login");
-      })
-      .catch((err) => {
-        console.log(err.response);
-        setErrors("Something went wrong.");
-      });
+    const res = await registerUser({ username, password, email });
+
+    if (res.data) {
+      setErrors();
+      alert(`${result.data.username} registered succesfully`);
+      navigate("/login");
+    }
+    if (res.error) {
+      setErrors("Something went wrong.");
+    }
   }
 
   return (
@@ -72,46 +68,52 @@ function Register() {
           </Alert>
         )}
 
-        <form style={{ width: "100%" }} onSubmit={false}>
-          <FormControl required fullWidth margin="normal">
-            <InputLabel>Username</InputLabel>
-            <Input
-              name="username"
-              // placeholder="username *"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </FormControl>
-          <FormControl required fullWidth margin="normal">
-            <InputLabel>Email</InputLabel>
-            <Input
-              name="email"
-              // placeholder="email *"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              // type="email"
-            />
-          </FormControl>
-          <FormControl required fullWidth margin="normal">
-            <InputLabel>Password</InputLabel>
-            <Input
-              name="password"
-              // placeholder="password *"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </FormControl>
+        {result.isLoading ? (
+          <Box pt={3} height={200}>
+            Loading
+          </Box>
+        ) : (
+          <form style={{ width: "100%" }} onSubmit={false}>
+            <FormControl required fullWidth margin="normal">
+              <InputLabel>Username</InputLabel>
+              <Input
+                name="username"
+                // placeholder="username *"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </FormControl>
+            <FormControl required fullWidth margin="normal">
+              <InputLabel>Email</InputLabel>
+              <Input
+                name="email"
+                // placeholder="email *"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                // type="email"
+              />
+            </FormControl>
+            <FormControl required fullWidth margin="normal">
+              <InputLabel>Password</InputLabel>
+              <Input
+                name="password"
+                // placeholder="password *"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </FormControl>
 
-          <Button
-            fullWidth
-            variant="outlined"
-            type="submit"
-            sx={{ marginTop: 5 }}
-            onClick={createPostHandler}
-          >
-            Register
-          </Button>
-        </form>
+            <Button
+              fullWidth
+              variant="outlined"
+              type="submit"
+              sx={{ marginTop: 5 }}
+              onClick={handleRegister}
+            >
+              Register
+            </Button>
+          </form>
+        )}
       </Paper>
     </Box>
   );

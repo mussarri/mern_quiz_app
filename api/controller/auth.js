@@ -29,7 +29,7 @@ export const registerController = async (req, res) => {
 export const loginController = async (req, res) => {
   const { username, password } = req.body;
   const isUser = await User.findOne({ username });
-  console.log(isUser);
+  console.log(req);
   if (isUser) {
     const passMatch = bcrypt.compareSync(password, isUser.password);
     if (passMatch) {
